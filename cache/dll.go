@@ -92,5 +92,8 @@ func (dll *DoublyLinkedList) Remove(node *Node) *Node {
 		dll.tail = node.prev
 	}
 
+	// it's removed, thus the pointers should be initialized.
+	node.prev = nil
+	node.next = nil
 	return node
 }
