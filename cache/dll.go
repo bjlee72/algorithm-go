@@ -11,18 +11,28 @@ type Value interface {
 type Node struct {
 	prev  *Node
 	next  *Node
-	Value Value
+	value Value
+}
+
+// Value returns the value of the value field (getter)
+func (node *Node) Value() Value {
+	return node.value
+}
+
+// SetValue sets the value field (setter)
+func (node *Node) SetValue(value Value) {
+	node.value = value
 }
 
 // String returns the string representation of the Node.
 func (node *Node) String() string {
 	if node.next == nil {
-		return node.Value.String()
+		return node.Value().String()
 	}
 
 	stringToNext := node.next.String()
 
-	return fmt.Sprintf("%s->%s", node.Value.String(), stringToNext)
+	return fmt.Sprintf("%s->%s", node.Value().String(), stringToNext)
 }
 
 // DoublyLinkedList that keeps head and tail pointers.

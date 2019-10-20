@@ -6,7 +6,7 @@ type CachedItem struct {
 	key   string
 }
 
-func (cachedItem *CachedItem) String() string {
+func (cachedItem CachedItem) String() string {
 	return cachedItem.value.String()
 }
 
@@ -39,7 +39,7 @@ func (cache *LRUCache) Get(key string) Value {
 	}
 
 	cache.itemOrder.MoveToFront(node)
-	return node.Value
+	return node.Value()
 }
 
 // Put an item to the cache.
@@ -48,17 +48,17 @@ func (cache *LRUCache) Put(key string, value Value) {
 	if node != nil {
 		cache.itemOrder.MoveToFront(node)
 		// CachedItem is also a value
-		node.Value = &CachedItem{key: key, value: value}
+		node.SetValue(CachedItem{key: key, value: value})
 		return
 	}
 
-	newNode := &Node{Value: &CachedItem{key: key, value: value}}
+	newNode := &Node{value: CachedItem{key: key, value: value}}
 	cache.table[key] = newNode
 	cache.itemOrder.AddToFront(newNode)
 
 	if len(cache.table) > cache.capacity {
 		evictionNode := cache.itemOrder.RemoveFromTail()
-		cachedItem, ok := evictionNode.Value.(*CachedItem)
+		cachedItem, ok := evictionNode.Value().(CachedItem)
 
 		if !ok {
 			panic("Wrong type item in the table")
